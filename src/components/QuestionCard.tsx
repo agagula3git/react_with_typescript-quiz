@@ -1,25 +1,33 @@
 import React from 'react';
 //Types
-import { AnswerObject } from '../App'
+import { AnswerObject, QuestionsState } from '../someTypes'
 //Styles
 import { Wrapper, ButtonWrapper} from './QuestionCard.styles'
+//An action creator
+import { checkAnswer } from '../redux/actions'
 
 interface Props {
     question: string;
     answers: string[];
-    callback: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    dispatch: any;
     userAnswer: AnswerObject | undefined;
     questionNr: number;
     totalQuestions: number;
+    gameOver: boolean,
+    questions: QuestionsState[],
+    number: number
 
 }
 const QuestionCard: React.FC<Props> = ({
     question,
     answers, 
-    callback, 
+    dispatch,
     userAnswer,
     questionNr, 
-    totalQuestions
+    totalQuestions,
+    gameOver,
+    questions,
+    number
 }) => (
     <Wrapper>
         <p className="number">
@@ -33,7 +41,11 @@ const QuestionCard: React.FC<Props> = ({
                     correct={userAnswer?.correctAnswer === answer}
                     userClicked={userAnswer?.answer === answer}
                     >
-                    <button disabled={userAnswer ? true : false} value = {answer} onClick={callback}>
+                    <button 
+                        disabled={userAnswer ? true : false} 
+                        value = {answer} 
+                        onClick = {e => dispatch(checkAnswer(e, gameOver, number, questions))}
+                    >
                         <span dangerouslySetInnerHTML={{__html: answer}}/>
                     </button>
                 </ButtonWrapper>

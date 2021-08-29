@@ -1,14 +1,6 @@
-import { QuestionsState } from '../API'
-import { QuizActions } from './actions'
+import { QuestionsState, AnswerObject } from '../someTypes'
 
-export type AnswerObject = {
-    question: string;
-    answer: string;
-    correct: boolean;
-    correctAnswer: string;
-}
-
-type InitialState = {
+export type QuizState = {
     loading: boolean;
     questions: QuestionsState[];
     number: number;
@@ -17,27 +9,33 @@ type InitialState = {
     gameOver: boolean;
 }
 
-export const reducer = (
-    state: InitialState = {loading: true, questions: [], number: 0, userAnswers: [], score: 0, gameOver: true},
-    action: QuizActions
-    ): InitialState => {
+export const reducer = ( 
+    state: QuizState = { loading: false, questions: [], number: 0, userAnswers: [], score: 0, gameOver: true}, 
+    action: any): QuizState => {
         switch(action.type){
             case 'START_TRIVIA':
                 return{
-                    ...state,
                     loading: false,
                     questions: action.payload,
-                    gameOver: false
+                    gameOver: false,
+                    userAnswers: [],
+                    score: 0,
+                    number: 0
+                }
+            case 'MAKE_REQUEST':
+                return{
+                    ...state,
+                    loading: true
                 }
             case 'SAVE_USER_ANSWER':
                 return{
                     ...state,
                     userAnswers: state.userAnswers.concat(action.payload.answerObject)
                 }
-            case 'NEXT_QUESTIONS':
+            case 'NEXT_QUESTION':
                 return{
                     ...state,
-                    number: state.number + 1
+                    number: action.payload
                 }
             case 'INCREASE_SCORE':
                 return{
