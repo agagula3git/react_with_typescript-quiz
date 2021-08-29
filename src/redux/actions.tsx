@@ -1,3 +1,5 @@
+import AnswerObject from './reducer'
+import TOTAL_QUESTIONS from '../App'
 
 export enum Difficulty{
     EASY = "easy",
@@ -5,7 +7,7 @@ export enum Difficulty{
     HARD = "hard"
 }
 
-type Question ={
+type Question = {
     category: string;
     correct_answer: string;
     difficulty: string;
@@ -35,8 +37,25 @@ const startTrivia = (amount: number, difficulty: Difficulty) => {
     }
 }
 
-const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
+const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>, gameOver: boolean, answerObject: AnswerObject) => {
     return function(dispatch){
-        
+        if(!gameOver){
+            const answer = e.currentTarget.value;
+            // checking answer
+            const correct = questions[number].correct_answer === answer;
+            //if answer is correct then increase score for one
+            if(correct){
+                dispatch({type: 'INCREASE_SCORE'})
+            }
+            dispatch({type: 'SAVE_USER_ANSWER', payload: {answerObject: answerObject}})
+        }
     }
 }
+
+const nextQuestion = (number: boolean) => {
+    // move on to the next question if not the last question
+    const nextNumb = number + 1;
+    nextNumb ===  TOTAL_QUESTIONS ? dispatch({type: 'COMPLETE_THE_QUIZ'}) : dispatch({type: 'NEXT_QUESTION'})
+}
+
+export const QuizActions = startTrivia | checkAnswer | nextQuestion;
